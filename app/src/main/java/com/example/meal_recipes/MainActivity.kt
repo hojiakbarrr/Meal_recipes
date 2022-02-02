@@ -9,22 +9,24 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
+import com.example.meal_recipes.Base.DetailsMeal
+import com.example.meal_recipes.Base.MealDao
+import com.example.meal_recipes.Base.Meal_Base
 import java.io.Serializable
 
 class MainActivity : AppCompatActivity(), Meak_Adapter.FoodClickListener {
     private var myAdapter: Meak_Adapter? = null
     private var myResycler: RecyclerView? = null
 
-    var recipeslist = ArrayList<DetailsMeal>()
+    var recipeslist : MutableList<DetailsMeal> = ArrayList()
     var listTransfer = ArrayList<DetailsMeal>()
-    var searchList = ArrayList<DetailsMeal>()
-    private var perehod = DetailsMeal.remove
-
-//    var detailsMeal = DetailsMeal()
+    var searchList : MutableList<DetailsMeal> = ArrayList()
+     var perehod : MutableList<DetailsMeal> = ArrayList()
+    lateinit var database: Meal_Base
 
 
     var like = R.drawable.ic_baseline_favorite_border_24
-    var delete = R.drawable.ic_baseline_delete_forever_24
     var imAge = R.drawable.zapechoynnaya_kurica
     var imAge1 = R.drawable.frikadelki
     var imAge2 = R.drawable.soup
@@ -384,6 +386,14 @@ class MainActivity : AppCompatActivity(), Meak_Adapter.FoodClickListener {
         myResycler?.setHasFixedSize(true)
         myResycler?.adapter = myAdapter
         myAdapter?.notifyDataSetChanged()
+
+        database = Room.databaseBuilder(this,
+            Meal_Base :: class.java,
+            "mealDb").allowMainThreadQueries()
+            .build()
+
+        perehod = database.getMealDao().getAllMeal()!!
+
     }
 
 
@@ -404,18 +414,6 @@ class MainActivity : AppCompatActivity(), Meak_Adapter.FoodClickListener {
         for (i in searchList.indices) {
             if (i == position) {
 
-//                else if (searchList.get(position).isSelected == false) {
-//                    searchList[position].likeIdImage = like
-////                    perehod[position].likeIdImage = like
-//                    myAdapter?.notifyDataSetChanged()
-//                    searchList.get(position).isSelected = false
-//                    try {
-//                        perehod.remove(searchList[position])
-//                    } catch (e: Exception) {
-//                    }
-//                    myAdapter?.notifyDataSetChanged()
-//                    Toast.makeText(this, "удаление", Toast.LENGTH_SHORT).show()
-
                 if (searchList.get(position).isSelected == false) {
                     if (isAdded(detail)) {
                         Toast.makeText(this, "уже добавлено", Toast.LENGTH_SHORT).show()
@@ -425,15 +423,21 @@ class MainActivity : AppCompatActivity(), Meak_Adapter.FoodClickListener {
                         myAdapter?.notifyDataSetChanged()
 
                         perehod.add(searchList[position])
+                        var newMeal = DetailsMeal()
+                        newMeal = searchList[position]
+                        database.getMealDao().addFavMeal(newMeal)
                         searchList.get(position).isSelected = true
                         Toast.makeText(this, "Добавлено в корзину любимых блюд", Toast.LENGTH_SHORT).show()
 
                     }
                 } else if (searchList.get(position).isSelected == true) {
                     searchList[position].likeIdImage = like
-//                    perehod[position].likeIdImage = like
                     myAdapter?.notifyDataSetChanged()
                     searchList.get(position).isSelected = false
+
+                    var DeleteMeal = DetailsMeal()
+                    DeleteMeal = searchList[position]
+                    database.getMealDao().delete(DeleteMeal)
                     try {
                         perehod.remove(searchList[position])
                     } catch (e: Exception) {
@@ -443,32 +447,15 @@ class MainActivity : AppCompatActivity(), Meak_Adapter.FoodClickListener {
 
                 }
             }
-
-
         }
-//        for (o in DetailsMeal.we) {
-//            for (i in searchList) {
-//                if (o.id == i.id) {
-//                    i.likeIdImage = like
-//                    i.isSelected = false
-//                }
-//                myAdapter?.notifyDataSetChanged()
-//            }
+    }
+
+//    override fun deletefav(id: Int) {
+//        searchList.get(id).likeIdImage = like
+//        searchList.get(id).isSelected = false
+//        myAdapter?.notifyDataSetChanged()
 //
-//        }
-
-    }
-
-    override fun deletefav(position: Int) {
-        for (o in searchList) {
-            if (o.id == position) {
-                o.likeIdImage = like
-                o.isSelected = false
-            }
-        }
-        myAdapter?.notifyDataSetChanged()
-
-    }
+//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

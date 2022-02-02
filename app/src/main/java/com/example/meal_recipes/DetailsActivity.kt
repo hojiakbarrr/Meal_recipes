@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.meal_recipes.Base.DetailsMeal
 
 class DetailsActivity : AppCompatActivity() {
     var foto: ImageView ?=null
@@ -15,9 +16,7 @@ class DetailsActivity : AppCompatActivity() {
     var ingridients:TextView ?=null
     var metods:TextView ?=null
     var isClick = ArrayList<DetailsMeal>()
-    var isClick_2 = ArrayList<DetailsMeal>()
     var se: Int = 0
-    var ab: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
@@ -32,9 +31,6 @@ class DetailsActivity : AppCompatActivity() {
         metods = findViewById(R.id.textView21)
 
         isClick = intent.getSerializableExtra("zakaz") as ArrayList<DetailsMeal>
-//        isClick_2 = intent.getSerializableExtra("order") as ArrayList<DetailsMeal>
-
-
 
         for (o in isClick){
             se = o.imageId
@@ -48,22 +44,6 @@ class DetailsActivity : AppCompatActivity() {
             metods?.text = o.metod
 
         }
-
-//        for (o in isClick_2){
-//            ab = o.imageId
-//            foto?.setImageResource(ab)
-//            name?.text = o.title
-//            timeCook?.text = o.gotovit
-//            prep?.text = o.podgotovka
-//            kcall?.text = o.kkal
-//            portchi?.text = o.porcii
-//            ingridients?.text = o.ingridienty
-//            metods?.text = o.metod
-//
-//        }
-
-
-
 
 
 

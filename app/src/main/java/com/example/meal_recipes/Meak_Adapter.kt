@@ -6,9 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.meal_recipes.Base.DetailsMeal
 
 
-class Meak_Adapter(val list: ArrayList<DetailsMeal>,
+class Meak_Adapter(val list: MutableList<DetailsMeal>,
                    val clickListener: FoodClickListener) :
     RecyclerView.Adapter<Meak_Adapter.MealHolder> (){
 
@@ -40,6 +41,7 @@ class Meak_Adapter(val list: ArrayList<DetailsMeal>,
         holder.like.setOnClickListener {
             clickListener.fonLikeClick(position)
         }
+
     }
 
     override fun getItemCount(): Int {
@@ -48,7 +50,6 @@ class Meak_Adapter(val list: ArrayList<DetailsMeal>,
     interface FoodClickListener {
         fun fonItemClick(position: Int)
         fun fonLikeClick(position: Int)
-        fun deletefav(position: Int)
     }
 
 }

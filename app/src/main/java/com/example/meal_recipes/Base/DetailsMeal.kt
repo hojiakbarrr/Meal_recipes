@@ -1,8 +1,12 @@
-package com.example.meal_recipes
+package com.example.meal_recipes.Base
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.io.Serializable
 
-class DetailsMeal(
+@Entity(tableName = "meal_database")
+data class DetailsMeal(
+    @PrimaryKey
     var id: Int = 0,
     var imageId: Int = 0,
     var title: String = "",
@@ -20,8 +24,7 @@ class DetailsMeal(
 
 ) : Serializable{
     companion object{
-        var remove = ArrayList<DetailsMeal>()
-        var we = ArrayList<DetailsMeal>()
+        var remove : MutableList<DetailsMeal> = ArrayList()
     }
 }
 

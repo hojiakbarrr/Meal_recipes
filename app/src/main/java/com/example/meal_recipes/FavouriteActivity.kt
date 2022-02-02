@@ -6,19 +6,29 @@ import android.os.Bundle
 import androidx.appcompat.app.ActionBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
+import com.example.meal_recipes.Base.DetailsMeal
+import com.example.meal_recipes.Base.Meal_Base
 import java.io.Serializable
 
 class FavouriteActivity : AppCompatActivity(), Meak_Adapter.FoodClickListener {
     private var recyclerView: RecyclerView? = null
     private var myAdapter: Meak_Adapter? = null
-    private var list: ArrayList<DetailsMeal> = ArrayList()
+    private var list : MutableList<DetailsMeal> = ArrayList()
     private var listTransfer: ArrayList<DetailsMeal> = ArrayList()
     var delete = R.drawable.ic_baseline_delete_forever_24
-    var like = R.drawable.ic_baseline_favorite_border_24
     var er : Int = 0
+    var database: Meal_Base? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_favourite)
+
+        database = Room.databaseBuilder(this,
+            Meal_Base :: class.java,
+            "mealDb").allowMainThreadQueries()
+            .build()
+
+        list = database?.getMealDao()?.getAllMeal()!!
 
 //        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true)
 
@@ -51,22 +61,20 @@ class FavouriteActivity : AppCompatActivity(), Meak_Adapter.FoodClickListener {
     }
 
     override fun fonLikeClick(position: Int) {
-        DetailsMeal.remove.removeAt(position)
+//        DetailsMeal.remove.removeAt(position)
         list.removeAt(position)
-//        DetailsMeal.we.add(list[position])
-        for (o in list){
-             er = o.id
-        }
-        deletefav(er)
+
+
+        var newMeal = DetailsMeal()
+        newMeal = list[position]
+        database?.getMealDao()?.delete(newMeal)
+
+//        var deleteMeal = list.get(position)
+//
+//            database!!.getMealDao().delete(deleteMeal)
+
 
         myAdapter?.notifyDataSetChanged()
     }
-
-    override fun deletefav(position: Int) {
-    }
-
-//    interface op {
-//        fun isClickkk(position: Int)
-//    }
 
 }
